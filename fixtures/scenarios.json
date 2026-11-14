@@ -1,0 +1,344 @@
+[
+  {
+    "name": "shared-object",
+    "routes": [
+      {
+        "path": "/exchange",
+        "body": {
+          "package": "p1",
+          "parts": [
+            "/part/a"
+          ],
+          "sealed": true
+        },
+        "status": 200,
+        "method": "GET"
+      },
+      {
+        "path": "/part/a",
+        "body": {
+          "scope": "A",
+          "types": {
+            "t": {
+              "attributes": [
+                {
+                  "key": "priority",
+                  "kind": "enum",
+                  "options": {
+                    "e1": {
+                      "label": "High"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "objects": {
+            "r1": {
+              "type": "t",
+              "values": {
+                "priority": [
+                  "e1"
+                ]
+              }
+            }
+          },
+          "specifications": [
+            {
+              "id": "s1",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "A",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "s2",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "A",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "relations": []
+        },
+        "status": 200,
+        "method": "GET"
+      }
+    ],
+    "expected": [
+      {
+        "objectKey": "A/r1",
+        "values": {
+          "priority": [
+            {
+              "id": "e1",
+              "label": "High"
+            }
+          ]
+        }
+      }
+    ],
+    "forbidden": []
+  },
+  {
+    "name": "unresolved-part",
+    "routes": [
+      {
+        "path": "/exchange",
+        "body": {
+          "package": "p2",
+          "parts": [
+            "/part/a"
+          ],
+          "sealed": false
+        },
+        "status": 200,
+        "method": "GET"
+      },
+      {
+        "path": "/part/a",
+        "body": {
+          "scope": "A",
+          "types": {},
+          "objects": {},
+          "specifications": [
+            {
+              "id": "s",
+              "nodes": [
+                {
+                  "nodeId": "n",
+                  "object": {
+                    "scope": "B",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "relations": []
+        },
+        "status": 200,
+        "method": "GET"
+      }
+    ],
+    "expected": [],
+    "forbidden": [
+      {
+        "objectKey": "B/r1",
+        "complete": true
+      }
+    ]
+  },
+  {
+    "name": "cross-part-object",
+    "routes": [
+      {
+        "path": "/exchange",
+        "body": {
+          "package": "p1",
+          "parts": [
+            "/part/a",
+            "/part/b"
+          ],
+          "sealed": true
+        },
+        "status": 200,
+        "method": "GET"
+      },
+      {
+        "path": "/part/a",
+        "body": {
+          "scope": "A",
+          "types": {
+            "t": {
+              "attributes": [
+                {
+                  "key": "priority",
+                  "kind": "enum",
+                  "options": {
+                    "e1": {
+                      "label": "High"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "objects": {},
+          "specifications": [
+            {
+              "id": "s1",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "B",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "s2",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "B",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "relations": []
+        },
+        "status": 200,
+        "method": "GET"
+      },
+      {
+        "path": "/part/b",
+        "body": {
+          "scope": "B",
+          "types": {
+            "t": {
+              "attributes": [
+                {
+                  "key": "priority",
+                  "kind": "enum",
+                  "options": {
+                    "e1": {
+                      "label": "High"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "objects": {
+            "r1": {
+              "type": "t",
+              "values": {
+                "priority": [
+                  "e1"
+                ]
+              }
+            }
+          },
+          "specifications": [],
+          "relations": []
+        },
+        "status": 200,
+        "method": "GET"
+      }
+    ],
+    "expected": [
+      {
+        "objectKey": "B/r1"
+      },
+      {
+        "specification": "s1",
+        "nodeId": "n1",
+        "objectKey": "B/r1"
+      }
+    ],
+    "forbidden": []
+  },
+  {
+    "name": "unknown-enum-id",
+    "routes": [
+      {
+        "path": "/exchange",
+        "body": {
+          "package": "p1",
+          "parts": [
+            "/part/a"
+          ],
+          "sealed": true
+        },
+        "status": 200,
+        "method": "GET"
+      },
+      {
+        "path": "/part/a",
+        "body": {
+          "scope": "A",
+          "types": {
+            "t": {
+              "attributes": [
+                {
+                  "key": "priority",
+                  "kind": "enum",
+                  "options": {
+                    "e1": {
+                      "label": "High"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "objects": {
+            "r1": {
+              "type": "t",
+              "values": {
+                "priority": [
+                  "missing"
+                ]
+              }
+            }
+          },
+          "specifications": [
+            {
+              "id": "s1",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "A",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "s2",
+              "nodes": [
+                {
+                  "nodeId": "n1",
+                  "object": {
+                    "scope": "A",
+                    "id": "r1"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "relations": []
+        },
+        "status": 200,
+        "method": "GET"
+      }
+    ],
+    "expected": [],
+    "forbidden": [],
+    "complete": false
+  }
+]
